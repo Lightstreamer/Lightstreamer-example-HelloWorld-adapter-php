@@ -33,9 +33,7 @@ class DataProviderServer extends Server implements ItemEventListener
 
     protected function getActiveItem($itemName)
     {
-        echo "GetActiveItem($itemName)\n";
         if (isset($this[$itemName])) {
-            echo "Returning GetActiveItem($itemName)\n";
             return $this[$itemName];
         } else {
             echo "No active item found for request [$itemName]!\n";
@@ -61,7 +59,6 @@ class DataProviderServer extends Server implements ItemEventListener
 
     public function update($itemName, $eventsMap, $isSnapshot)
     {
-        echo "Update\n";
         $requestId = $this->getActiveItem($itemName);
         
         if (! is_null($requestId)) {
@@ -134,7 +131,6 @@ class DataProviderServer extends Server implements ItemEventListener
                 
                 
                 $this->dataAdapter->subscribe($itemName);
-                echo "Dopo subscribe\n";
                 $response = DataProviderProtocol::writeSub();
                 
                 break;

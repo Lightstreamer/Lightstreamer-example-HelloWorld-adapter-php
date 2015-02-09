@@ -45,8 +45,6 @@ class LiteralBasedProvider extends MetadataProviderAdapter
         }
         
         $this->data = array_merge($this->data, $params);
-        echo "MetaDataProvider initialized with following parameters:\n";
-        print_r($this->data);
     }
 
     public function getItems($user, $sessionID, $group)
