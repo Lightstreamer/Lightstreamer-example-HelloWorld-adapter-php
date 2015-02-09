@@ -196,6 +196,6 @@ try {
     $dataproviderServerStarter = new StarterServer($host, $data_rrport, $data_notifport);
     $dataproviderServerStarter->start($dataprovider_server);
 } catch (Exception $e) {
-    echo "Caught exception {$e->getMessage()\n";
+    echo "Caught exception {$e->getMessage()}\n";
 }
 ?>
