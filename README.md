@@ -5,7 +5,7 @@ The "Hello World" Tutorial is a very basic example, based on Lightstreamer, wher
 
 This project, of the "Hello World with Lightstreamer" series, will focus on a [PHP](http://www.php.net/) port of the Java Adapter illustrated in [Lightstreamer - "Hello World" Tutorial - Java Adapter](https://github.com/Weswit/Lightstreamer-example-HelloWorld-adapter-java). In particular, a PHP-CLI version of the Data Adapter will be shown.
 
-As an example of [Clients Using This Adapter](https://github.com/Weswit/Lightstreamer-example-HelloWorld-adapter-phpe#clients-using-this-adapter), you may refer to the [Lightstreamer - "Hello World" Tutorial - HTML Client](https://github.com/Weswit/Lightstreamer-example-HelloWorld-client-javascript) and view the corresponding [Live Demo](http://demos.lightstreamer.com/HelloWorld/).
+As an example of [Clients Using This Adapter](https://github.com/Weswit/Lightstreamer-example-HelloWorld-adapter-php#clients-using-this-adapter), you may refer to the [Lightstreamer - "Hello World" Tutorial - HTML Client](https://github.com/Weswit/Lightstreamer-example-HelloWorld-client-javascript) and view the corresponding [Live Demo](http://demos.lightstreamer.com/HelloWorld/).
 
 ## Detail
 
@@ -266,12 +266,12 @@ If you want to install a version of this demo in your local Lightstreamer Server
 * Plug the Proxy Data Adapter into the Server: go to the `Deployment_LS` folder and copy the `PHPHelloWorld` directory and all of its files to the `adapters` folder of your Lightstreamer Server installation.
 * Alternatively, you may plug the *robust* versions of the Proxy Data Adapter: go to the `Deployment_LS(robust)` folder and copy the `PhpHelloWorld` directory and all of its files into the `adapters` folder.
 * Install the PHP Remote Adapter
- * Create a directory where to deploy the PHP Remote Adapter and let call it `Deployment_PHP_Remote_Adapter`.
+ * Create a directory where to deploy the PHP Remote Adapter, let's call it `Deployment_PHP_Remote_Adapter`.
  * Download all the PHP source files from this project and copy them into the `Deployment_PHP_Remote_Adapter` folder.
 *  Launch Lightstreamer Server. The Server startup will complete only after a successful connection between the Proxy Data Adapter and the Remote Data Adapter.
 * Launch the PHP Remote Adapter: go to the `Deployment_PHP_Remote_Adapter` folder and launch:<BR/>
 `> php helloworld.php`<BR/>
-* IMPORTANT: The demo requires  the [pthreads](http://php.net/manual/en/intro.pthreads.php) module is installed into your php  environment. You can get detailed information on how to properly install the module [here](http://php.net/manual/en/pthreads.setup.php). The demo has been succesfully tested on the following environments:
+* IMPORTANT: The demo requires that the [pthreads](http://php.net/manual/en/intro.pthreads.php) module is installed into your php  environment. You can get detailed information on how to properly install the module [here](http://php.net/manual/en/pthreads.setup.php). The demo has been succesfully tested on the following environments:
  * Windows 7 and 8, with PHP version [VC 11 Thread Safe for X86](http://windows.php.net/downloads/releases/php-5.6.5-Win32-VC11-x86.zip) and pthreed module version [2.0.10-5.6-ts-vc11](http://windows.php.net/downloads/pecl/releases/pthreads/2.0.10/php_pthreads-2.0.10-5.6-ts-vc11-x86.zip)
  * Ubuntu Linux version 14.10, with PHP version 5.6.5 (compiled with the *--enable-maintainer-zts* flag) and pthread module version 2.0.10, installed as a pecl extension.
 * Test the Adapter, launching the ["Hello World" Tutorial - HTML Client](https://github.com/Weswit/Lightstreamer-example-HelloWorld-client-javascript)  listed in [Clients Using This Adapter](https://github.com/Weswit/Lightstreamer-example-HelloWorld-adapter-php#clients-using-this-adapter).
