@@ -34,7 +34,7 @@ The code example is structured as follows:
 * The `helloworld.php` file, which is the entry point of the example.
 * The "lightstreamer" hierarchy directory structure, containing all the PHP classes (a file for each class), which implement the ARI Protocol.
 
-First, we import the classes included in the lightstreamer namespace and sub-namespaces, required to the communicate with the remote Proxy Adapters
+First, we import the classes included in the lightstreamer namespace and sub-namespaces, required to the communicate with the Proxy Adapters:
 
 ```php
 use Lightstreamer\remote\metadata\LiteralBasedProvider;
@@ -45,16 +45,6 @@ use Lightstreamer\remote\ItemEventListener;
 use Lightstreamer\remote\Server;
 ```
 Then, we define a Thread to generate the "greetings" events to be send to the Proxy Adapter.
-```js
-var DataProvider = require('lightstreamer-adapter').DataProvider;
-var net = require('net');
-
-var HOST = 'localhost';
-var REQ_RESP_PORT = 6663;
-var WRITE_PORT = 6664;
-```
-
-Then, we create two streams that will be used by our DataProvider to communicate with the Proxy Data Adapter:
 ```php
 class GreetingsThread extends Thread
 {
