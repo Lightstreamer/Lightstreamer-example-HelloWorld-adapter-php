@@ -25,7 +25,7 @@ Basically, the Proxy Data Adapter exposes the Data Adapter interface through TCP
 
 You may find more details about ARI in [Adapter Remoting Infrastructure Network Protocol Specification](http://www.lightstreamer.com/docs/adapter_generic_base/ARI%20Protocol.pdf).
 
-<!-- END DESCRIPTION lightstreamer-example-helloworld-adapter-node -->
+<!-- END DESCRIPTION lightstreamer-example-helloworld-adapter-php -->
 
 ### Dig the Code
 
@@ -269,12 +269,12 @@ If you want to install a version of this demo in your local Lightstreamer Server
  * Create a directory where to deploy the PHP Remote Adapter and let call it `Deployment_PHP_Remote_Adapter`.
  * Download all the PHP source files from this project and copy them into the `Deployment_PHP_Remote_Adapter` folder.
 *  Launch Lightstreamer Server. The Server startup will complete only after a successful connection between the Proxy Data Adapter and the Remote Data Adapter.
-* Launch the PHP Remote Adapter: go to the `Deployment_Node_Remote_Adapter` folder and launch:<BR/>
+* Launch the PHP Remote Adapter: go to the `Deployment_PHP_Remote_Adapter` folder and launch:<BR/>
 `> php helloworld.php`<BR/>
 * IMPORTANT: The demo requires  the [pthreads](http://php.net/manual/en/intro.pthreads.php) module is installed into your php  environment. You can get detailed information on how to properly install the module [here](http://php.net/manual/en/pthreads.setup.php). The demo has been succesfully tested on the following environments:
  * Windows 7 and 8, with PHP version [VC 11 Thread Safe for X86](http://windows.php.net/downloads/releases/php-5.6.5-Win32-VC11-x86.zip) and pthreed module version [2.0.10-5.6-ts-vc11](http://windows.php.net/downloads/pecl/releases/pthreads/2.0.10/php_pthreads-2.0.10-5.6-ts-vc11-x86.zip)
  * Ubuntu Linux version 14.10, with PHP version 5.6.5 (compiled with the *--enable-maintainer-zts* flag) and pthread module version 2.0.10, installed as a pecl extension.
-* Test the Adapter, launching the ["Hello World" Tutorial - HTML Client](https://github.com/Weswit/Lightstreamer-example-HelloWorld-client-javascript)  listed in [Clients Using This Adapter](https://github.com/Weswit/Lightstreamer-example-HelloWorld-adapter-node#clients-using-this-adapter).
+* Test the Adapter, launching the ["Hello World" Tutorial - HTML Client](https://github.com/Weswit/Lightstreamer-example-HelloWorld-client-javascript)  listed in [Clients Using This Adapter](https://github.com/Weswit/Lightstreamer-example-HelloWorld-adapter-php#clients-using-this-adapter).
     * To make the ["Hello World" Tutorial - HTML Client](https://github.com/Weswit/Lightstreamer-example-HelloWorld-client-javascript) front-end pages get data from the newly installed Adapter Set, you need to modify the front-end pages and set the required Adapter Set name to PHP_HELLOWORLD, when creating the LightstreamerClient instance. So edit the `index.html` page of the Hello World front-end, deployed under `Lightstreamer/pages/HelloWorld`, and replace:<BR/>
 `var client = new LightstreamerClient(null, "HELLOWORLD");`<BR/>
 with:<BR/>
