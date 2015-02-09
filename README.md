@@ -34,7 +34,7 @@ The code example is structured as follows:
 * The `helloworld.php` file, which is the entry point of the example.
 * The "lightstreamer" hierarchy directory structure, containing all the PHP classes (a file for each class), which implement the ARI Protocol.
 
-First, we import the classes included in the lightstreamer namespace and sub-namespaces, required to the communicate with the remote Proxy Adapters
+First, we import the classes included in the lightstreamer namespace and sub-namespaces, required to the communicate with the Proxy Adapters:
 
 ```php
 use Lightstreamer\remote\metadata\LiteralBasedProvider;
@@ -45,16 +45,6 @@ use Lightstreamer\remote\ItemEventListener;
 use Lightstreamer\remote\Server;
 ```
 Then, we define a Thread to generate the "greetings" events to be send to the Proxy Adapter.
-```js
-var DataProvider = require('lightstreamer-adapter').DataProvider;
-var net = require('net');
-
-var HOST = 'localhost';
-var REQ_RESP_PORT = 6663;
-var WRITE_PORT = 6664;
-```
-
-Then, we create two streams that will be used by our DataProvider to communicate with the Proxy Data Adapter:
 ```php
 class GreetingsThread extends Thread
 {
@@ -70,7 +60,7 @@ class GreetingsThread extends Thread
     private $itemName;
 
     /*
-     * Pause the thread is paused, no events generation from this moment.
+     * Pause the Thread, no events generation from this moment.
      */
     public function pause()
     {
@@ -130,7 +120,7 @@ class GreetingsThread extends Thread
 ```
 The class also provides a couple of methods (*pause()* and *resume()*) to manage the thread's execution, according to the life-cycle of the subscribed item.
 
-The HelloWorldDataAdpater implements the **IDataProvider** PHP interface, which is a PHP equivalent of the Java DataProvider interface. 
+The *HelloWorldDataAdapter* implements the **IDataProvider** PHP interface, which is a PHP equivalent of the Java DataProvider interface: 
 
 ```php
 class HelloWorldDataAdapter implements IDataProvider
@@ -171,9 +161,9 @@ class HelloWorldDataAdapter implements IDataProvider
     }
 }
 ```
-The Adapter's subscribe method is invoked when a new item is invoked for the first time. When the "greetings" item is subscribed by the first user, the GreetingsThread is resumed and starts to generate the real-time data. If more users subscribe to the "greetings" item, the subscribe method is no longer invoked. When the last user unsubscribes from this item, the Adapter is notified through the unsubscribe invocation. In this case, the GreetingsThread is paused and no more events are published  for that item. If a new user re-subscribes to "greetings", the subscribe method is invoked again ad the process resumes the same way.
+The Adapter's subscribe method is invoked when a new item is subscribed for the first time. When the "greetings" item is subscribed by the first user, the GreetingsThread is resumed and then it starts to generate the real-time data. If more users subscribe to the "greetings" item, the subscribe method is no longer invoked. When the last user unsubscribes from this item, the Adapter is notified through the unsubscribe invocation. In this case, the GreetingsThread is paused and no more events are published  for that item. If a new user re-subscribes to "greetings", the subscribe method is invoked again ad the process resumes the same way.
 
-The *StartServer* class is a simple utility which configures and starts a Server instances, which is the abstract class at the top of the hierarchy of the PHP classes implementing the ARI Protocol.
+The *StartServer* class is a simple utility, useful to configure and start a Server instances, which is the abstract class at the top of the hierarchy of the PHP classes implementing the ARI Protocol.
 ```php
 class StarterServer
 {
@@ -218,7 +208,7 @@ class StarterServer
 }
 ```
 
-The final part of the script initializes and starts the communication with the Proxy Adapters:
+The final part of the script initializes and activates the communication with the Proxy Adapters:
 ```php
 try {
     $host = "localhost";
@@ -280,7 +270,7 @@ If you want to install a version of this demo in your local Lightstreamer Server
 *  Launch Lightstreamer Server. The Server startup will complete only after a successful connection between the Proxy Data Adapter and the Remote Data Adapter.
 * Launch the PHP Remote Adapter: go to the `Deployment_Node_Remote_Adapter` folder and launch:<BR/>
 `> php helloworld.php`<BR/>
-* IMPORTANT: The demo requires  the [pthreads](http://php.net/manual/en/intro.pthreads.php) module installed into your php  environment. You can get detailed information on how to properly install the module [here](http://php.net/manual/en/pthreads.setup.php). The demo has been succesfully tested on the following environments:
+* IMPORTANT: The demo requires  the [pthreads](http://php.net/manual/en/intro.pthreads.php) module is installed into your php  environment. You can get detailed information on how to properly install the module [here](http://php.net/manual/en/pthreads.setup.php). The demo has been succesfully tested on the following environments:
  * Windows 7 and 8, with PHP version [VC 11 Thread Safe for X86](http://windows.php.net/downloads/releases/php-5.6.5-Win32-VC11-x86.zip) and pthreed module version [2.0.10-5.6-ts-vc11](http://windows.php.net/downloads/pecl/releases/pthreads/2.0.10/php_pthreads-2.0.10-5.6-ts-vc11-x86.zip)
  * Ubuntu Linux version 14.10, with PHP version 5.6.5 (compiled with the *--enable-maintainer-zts* flag) and pthread module version 2.0.10, installed as a pecl extension.
 * Test the Adapter, launching the ["Hello World" Tutorial - HTML Client](https://github.com/Weswit/Lightstreamer-example-HelloWorld-client-javascript)  listed in [Clients Using This Adapter](https://github.com/Weswit/Lightstreamer-example-HelloWorld-adapter-node#clients-using-this-adapter).
