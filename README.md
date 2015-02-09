@@ -248,6 +248,7 @@ The `adapters.xml` file for this demo should look like:
  
   <data_provider>
     <adapter_class>PROXY_FOR_REMOTE_ADAPTER</adapter_class>
+    <classloader>log-enabled</classloader>
     <param name="request_reply_port">6663</param>
     <param name="notify_port">6664</param>
   </data_provider>
@@ -266,7 +267,7 @@ If you want to install a version of this demo in your local Lightstreamer Server
 * Alternatively, you may plug the *robust* versions of the Proxy Data Adapter: go to the `Deployment_LS(robust)` folder and copy the `PhpHelloWorld` directory and all of its files into the `adapters` folder.
 * Install the PHP Remote Adapter
  * Create a directory where to deploy the PHP Remote Adapter and let call it `Deployment_PHP_Remote_Adapter`.
- * Download all the PHP source files from this project and copy them into the `Deployment_PHP_Remote_Adapter`.
+ * Download all the PHP source files from this project and copy them into the `Deployment_PHP_Remote_Adapter` folder.
 *  Launch Lightstreamer Server. The Server startup will complete only after a successful connection between the Proxy Data Adapter and the Remote Data Adapter.
 * Launch the PHP Remote Adapter: go to the `Deployment_Node_Remote_Adapter` folder and launch:<BR/>
 `> php helloworld.php`<BR/>
