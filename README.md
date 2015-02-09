@@ -227,7 +227,7 @@ try {
     echo "Caught exception {$e->getMessage()\n";
 }
 ```
-First we create and start the *GreetingThread*. Then, we instantiate the *HelloWordDataAdaper*, passing the handle to the GreetingsThread. After that, we create a *DataProviderServer* instance (which is the PHP equivalent of the Java DataProviderServer and extends the Server abstract class defined above) and assign the HelloWorldAdapter instance to it.
+First, we create and start the *GreetingThread*. Then, we instantiate the *HelloWordDataAdaper*, passing the handle to the GreetingsThread. After that, we create a *DataProviderServer* instance (which is the PHP equivalent of the Java DataProviderServer and extends the Server abstract class defined above) and assign the HelloWorldAdapter instance to it.
 Since the Proxy Data Adapter to wich our remote PHP Adapter will connect needs two connections, we create and setup the StarterServer with two different TPC ports (6661 and 6662 as configured in the beginning ) in order to make it create two stream sockets. Finally, we start DataProviderServer.
 
 #### The Adapter Set Configuration
@@ -248,6 +248,7 @@ The `adapters.xml` file for this demo should look like:
  
   <data_provider>
     <adapter_class>PROXY_FOR_REMOTE_ADAPTER</adapter_class>
+    <classloader>log-enabled</classloader>
     <param name="request_reply_port">6663</param>
     <param name="notify_port">6664</param>
   </data_provider>
@@ -266,7 +267,7 @@ If you want to install a version of this demo in your local Lightstreamer Server
 * Alternatively, you may plug the *robust* versions of the Proxy Data Adapter: go to the `Deployment_LS(robust)` folder and copy the `PhpHelloWorld` directory and all of its files into the `adapters` folder.
 * Install the PHP Remote Adapter
  * Create a directory where to deploy the PHP Remote Adapter and let call it `Deployment_PHP_Remote_Adapter`.
- * Download all the PHP source files from this project and copy them into the `Deployment_PHP_Remote_Adapter`.
+ * Download all the PHP source files from this project and copy them into the `Deployment_PHP_Remote_Adapter` folder.
 *  Launch Lightstreamer Server. The Server startup will complete only after a successful connection between the Proxy Data Adapter and the Remote Data Adapter.
 * Launch the PHP Remote Adapter: go to the `Deployment_Node_Remote_Adapter` folder and launch:<BR/>
 `> php helloworld.php`<BR/>
@@ -274,7 +275,7 @@ If you want to install a version of this demo in your local Lightstreamer Server
  * Windows 7 and 8, with PHP version [VC 11 Thread Safe for X86](http://windows.php.net/downloads/releases/php-5.6.5-Win32-VC11-x86.zip) and pthreed module version [2.0.10-5.6-ts-vc11](http://windows.php.net/downloads/pecl/releases/pthreads/2.0.10/php_pthreads-2.0.10-5.6-ts-vc11-x86.zip)
  * Ubuntu Linux version 14.10, with PHP version 5.6.5 (compiled with the *--enable-maintainer-zts* flag) and pthread module version 2.0.10, installed as a pecl extension.
 * Test the Adapter, launching the ["Hello World" Tutorial - HTML Client](https://github.com/Weswit/Lightstreamer-example-HelloWorld-client-javascript)  listed in [Clients Using This Adapter](https://github.com/Weswit/Lightstreamer-example-HelloWorld-adapter-node#clients-using-this-adapter).
-    * To make the ["Hello World" Tutorial - HTML Client](https://github.com/Weswit/Lightstreamer-example-HelloWorld-client-javascript) front-end pages get data from the newly installed Adapter Set, you need to modify the front-end pages and set the required Adapter Set name to PHP_HELLOWORLD, when creating the LightstreamerClient instance. So edit the `index.htm` page of the Hello World front-end, deployed under `Lightstreamer/pages/HelloWorld`, and replace:<BR/>
+    * To make the ["Hello World" Tutorial - HTML Client](https://github.com/Weswit/Lightstreamer-example-HelloWorld-client-javascript) front-end pages get data from the newly installed Adapter Set, you need to modify the front-end pages and set the required Adapter Set name to PHP_HELLOWORLD, when creating the LightstreamerClient instance. So edit the `index.html` page of the Hello World front-end, deployed under `Lightstreamer/pages/HelloWorld`, and replace:<BR/>
 `var client = new LightstreamerClient(null, "HELLOWORLD");`<BR/>
 with:<BR/>
 `var client = new LightstreamerClient(null, "PHP_HELLOWORLD");`<BR/>
