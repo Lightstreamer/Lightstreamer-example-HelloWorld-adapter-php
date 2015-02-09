@@ -275,9 +275,9 @@ If you want to install a version of this demo in your local Lightstreamer Server
  * Ubuntu Linux version 14.10, with PHP version 5.6.5 (compiled with the *--enable-maintainer-zts* flag) and pthread module version 2.0.10, installed as a pecl extension.
 * Test the Adapter, launching the ["Hello World" Tutorial - HTML Client](https://github.com/Weswit/Lightstreamer-example-HelloWorld-client-javascript)  listed in [Clients Using This Adapter](https://github.com/Weswit/Lightstreamer-example-HelloWorld-adapter-node#clients-using-this-adapter).
     * To make the ["Hello World" Tutorial - HTML Client](https://github.com/Weswit/Lightstreamer-example-HelloWorld-client-javascript) front-end pages get data from the newly installed Adapter Set, you need to modify the front-end pages and set the required Adapter Set name to PHP_HELLOWORLD, when creating the LightstreamerClient instance. So edit the `index.htm` page of the Hello World front-end, deployed under `Lightstreamer/pages/HelloWorld`, and replace:<BR/>
-`var client = new LightstreamerClient(null," HELLOWORLD");`<BR/>
+`var client = new LightstreamerClient(null, "HELLOWORLD");`<BR/>
 with:<BR/>
-`var client = new LightstreamerClient(null,"PHP_HELLOWORLD");;`<BR/>
+`var client = new LightstreamerClient(null, "PHP_HELLOWORLD");`<BR/>
     * Open a browser window and go to: [http://localhost:8080/HelloWorld/]()
 
 ### Clients Using This Adapter
