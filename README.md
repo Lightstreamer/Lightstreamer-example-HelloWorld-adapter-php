@@ -224,7 +224,7 @@ try {
     $dataproviderServerStarter = new StarterServer($host, $data_rrport, $data_notifport);
     $dataproviderServerStarter->start($dataprovider_server);
 } catch (Exception $e) {
-    echo "Caught exception {$e->getMessage()\n";
+    echo "Caught exception {$e->getMessage()}\n";
 }
 ```
 First, we create and start the *GreetingThread*. Then, we instantiate the *HelloWordDataAdaper*, passing the handle to the GreetingsThread. After that, we create a *DataProviderServer* instance (which is the PHP equivalent of the Java DataProviderServer and extends the Server abstract class defined above) and assign the HelloWorldAdapter instance to it.
