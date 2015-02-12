@@ -32,6 +32,7 @@ You may find more details about ARI in [Adapter Remoting Infrastructure Network 
 #### The PHP Data Adapter
 The code example is structured as follows:
 * The `helloworld.php` file, which is the entry point of the example.
+* The `autoload.php` file, which loads the required classes.
 * The "lightstreamer" hierarchy directory structure, containing all the PHP classes (a file for each class), which implement the ARI Protocol.
 
 First, we import the classes included in the lightstreamer namespace and sub-namespaces, required to the communicate with the Proxy Adapters:
