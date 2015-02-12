@@ -1,10 +1,6 @@
 <?php
+require "autoload.php";
 
-function __autoload($classname)
-{
-    $file = "./" . str_replace("\\", "/", $classname) . ".php";
-    require $file;
-}
 use Lightstreamer\remote\metadata\LiteralBasedProvider;
 use Lightstreamer\remote\MetaDataProviderServer;
 use Lightstreamer\remote\DataProviderServer;
@@ -22,7 +18,7 @@ class GreetingsThread extends Thread
     private $loop = true;
 
     private $paused = true;
-    
+
     private $itemName;
 
     /*
@@ -192,7 +188,7 @@ try {
     
     $dataprovider_server = new DataProviderServer($data_adapter);
     
-    /* Instantiating and starting the StarterServer */
+    /* Starting the StarterServer */
     $dataproviderServerStarter = new StarterServer($host, $data_rrport, $data_notifport);
     $dataproviderServerStarter->start($dataprovider_server);
 } catch (Exception $e) {
