@@ -1,34 +1,36 @@
 <?php
 /*
- Copyright 2015 Weswit Srl
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright 2015 Weswit Srl
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 namespace lightstreamer\remote;
 
 class RemoteProtocol
 {
 
-    static function sendReply($control, $reply)
+    static function sendReply($handle, $reply)
     {
         echo "Reply = $reply";
-        fputs($control, $reply);
+        if (! is_null($handle)) {
+            fputs($handle, $reply);
+        }
     }
 
     static function parse_request($request)
     {
+        printf("Received request: [%s]\n", $request);
         $request = rtrim($request);
-        echo "Request = [$request]\n";
         $tokens = explode('|', $request);
         $sid = $tokens[0];
         return array(
@@ -38,16 +40,38 @@ class RemoteProtocol
         );
     }
 
-    static function map($tokens, $start)
+    static function read($token, $type, $index)
     {
-        $data = array_slice($tokens, $start);
-        $session_info = array();
-        for ($i = 1; $i < count($data) - 2; $i += 4) {
-            $key = $data[$i];
-            $session_info[$key] = self::decodeString($data[$i + 2]);
+        $currentToken = $token[$index + 1];
+        if ($token[$index] == $type) {
+            return $currentToken;
+        } else {
+            throw new \RuntimeException("Found invalid token type $currentToken");
+        }
+    }
+
+    static function map($tokens, $offset, $length = NULL)
+    {
+        $data = array_slice($tokens, $offset, $length);
+        $map = array();
+        for ($i = 0; $i < count($data) - 2; $i += 4) {
+            $key = self::decodeString(self::read($data, "S", $i));
+            $map[$key] = self::decodeString(self::read($data, "S", $i + 2));
         }
         
-        return $session_info;
+        return $map;
+    }
+
+    static function seq($tokens, $offset, $length = NULL)
+    {
+        $data = array_slice($tokens, $offset, $length);
+        $seq = array();
+        $c = 0;
+        for ($i = 0; $i < count($data) - 1; $i += 2) {
+            $seq[$c ++] = self::decodeString(self::read($data, "S", $i));
+        }
+        
+        return $seq;
     }
 
     static function decodeString($string)
