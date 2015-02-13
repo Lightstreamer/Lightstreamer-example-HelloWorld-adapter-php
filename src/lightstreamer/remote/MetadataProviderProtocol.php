@@ -19,20 +19,49 @@ namespace lightstreamer\remote;
 class MetadataProviderProtocol extends RemoteProtocol
 {
 
+    private static function appendExceptions($response, \Exception $e, $subtype = true)
+    {
+        if ($subtype === true) {
+            if ($e instanceof MetadataProviderException) {
+                $response .= "M";
+            } elseif ($e instanceof NotificationException) {
+                $response .= "N";
+            } elseif ($e instanceof AccessException) {
+                $response .= "A";
+            } elseif ($e instanceof ItemsException) {
+                $response .= "I";
+            } elseif ($e instanceof SchemaException) {
+                $response .= "S";
+            } elseif ($e instanceof CreditsException) {
+                if ($e instanceof ConflictingSessionException) {
+                    $response .= "X";
+                } else {
+                    $response .= "C";
+                }
+            }
+        }
+        $response .= "|" . self::encodeString($e->getMessage());
+        
+        if ($subtype === true) {
+            if ($e instanceof CreditsException) {
+                $response .= "|" . $e->getCode() . "|" . self::encodeString($e->getClientUserMsg());
+                if ($e instanceof ConflictingSessionException) {
+                    $response .= "|" . self::encodeString($e->getConflictingSessionID());
+                }
+            }
+        }
+        
+        return $response;
+    }
+
     static function writeInit()
     {
-        $response = "MPI|V";
-        return $response;
+        return "MPI|V";
     }
 
     static function writeInitWithException(\Exception $e)
     {
-        $response = "MPI|E";
-        if ($e instanceof MetadataProviderException) {
-            $response .= "M";
-        }
-        $response .= "|" . self::encodeString($e->getMessage());
-        return $response;
+        return self::appendExceptions("MPI|E", $e);
     }
 
     static function readNotifyUserSession($data)
@@ -56,18 +85,7 @@ class MetadataProviderProtocol extends RemoteProtocol
 
     static function writeNotiyUserSessionWithException($method, \Exception $e)
     {
-        $response = "$method|E";
-        
-        if ($e instanceof AccessException) {
-            $response .= "A";
-        } elseif ($e instanceof CreditsException) {
-            $response .= "C";
-        }
-        $response .= "|" . self::encodeString($e->getMessage());
-        if ($e instanceof CreditsException) {
-            $response .= "|" . $e->getCode() . "|" . self::encodeString($e->getClientUserMsg());
-        }
-        return $response;
+        return self::appendExceptions("$method|E", $e);
     }
 
     static function readNotifyUserAuthorization($data)
@@ -100,48 +118,22 @@ class MetadataProviderProtocol extends RemoteProtocol
 
     static function writeNotifyNewSessionWithException(\Exception $e)
     {
-        $response = "NNS|E";
-        
-        if ($e instanceof NotificationException) {
-            $response .= "N";
-        } elseif ($e instanceof CreditsException) {
-            if ($e instanceof ConflictingSessionException) {
-                $response .= "X";
-            } else {
-                $response .= "C";
-            }
-        }
-        $response .= "|" . self::encodeString($e->getMessage());
-        if ($e instanceof CreditsException) {
-            $response .= "|" . $e->getCode() . "|" . self::encodeString($e->getClientUserMsg());
-            if ($e instanceof ConflictingSessionException) {
-                $response .= "|" . self::encodeString($e->getConflictingSessionID());
-            }
-        }
-        return $response;
+        return self::appendExceptions("NNS|E", $e);
     }
 
     static function readNotifiySessionClose($data)
     {
-        return self::decodeString($data[1]);
+        return self::decodeString(self::read($data, "S", 0));
     }
 
     static function writeNotifySessionClose()
     {
-        $response = "NSC|V";
-        
-        return $response;
+        return "NSC|V";
     }
 
     static function writeNotifySessionCloseWithException(\Exception $e)
     {
-        $response = "NSC|E";
-        
-        if ($e instanceof NotificationException) {
-            $response .= "N|" . self::encodeString($e->getMessage());
-        }
-        
-        return $response;
+        return self::appendExceptions("NSC|E", $e);
     }
 
     static function readGetItems($data)
@@ -168,15 +160,7 @@ class MetadataProviderProtocol extends RemoteProtocol
 
     static function writeGetItemsWithException(\Exception $e)
     {
-        $response = "GIS|E";
-        
-        if ($e instanceof ItemsException) {
-            $response .= "I";
-        }
-        
-        $response .= "|" . self::encodeString($e->getMessage());
-        
-        return $response;
+        return self::appendExceptions("GIS|E", $e);
     }
 
     static function readGetSchema($data)
@@ -208,28 +192,12 @@ class MetadataProviderProtocol extends RemoteProtocol
 
     static function writeGetSchemaWithException(\Exception $e)
     {
-        $response = "GSC|E";
-        
-        if ($e instanceof ItemsException) {
-            $response .= "I";
-        } elseif ($e instanceof SchemaException) {
-            $response .= "S";
-        }
-        
-        $response .= "|" . self::encodeString($e->getMessage());
-        
-        return $response;
+        return self::appendExceptions("GSC|E", $e);
     }
 
     static function readGetItemData($data)
     {
-        $decoded_items = array();
-        foreach ($data as $item) {
-            if ($item != "S") {
-                array_push($decoded_items, self::decodeString($item));
-            }
-        }
-        return $decoded_items;
+        return self::seq($data, 0);
     }
 
     static function writeGetItemData($itemData)
@@ -244,6 +212,11 @@ class MetadataProviderProtocol extends RemoteProtocol
         }
         
         return $response;
+    }
+
+    static function writeGetItemDataWithException(\Exception $e)
+    {
+        return self::appendExceptions("GIT|E", $e, FALSE);
     }
 
     static function readGetUserItemData($data)
@@ -272,6 +245,11 @@ class MetadataProviderProtocol extends RemoteProtocol
         return $response;
     }
 
+    static function writeGetUserItemDataWithException(\Exception $e)
+    {
+        return self::appendExceptions("GUI|E", $e, FALSE);
+    }
+
     static function readNotifyUserMessage($data)
     {
         $values = array(
@@ -285,11 +263,15 @@ class MetadataProviderProtocol extends RemoteProtocol
 
     static function writeNotifyUserMessage()
     {
-        $response = "NUM|V";
-        return $response;
+        return "NUM|V";
     }
 
-    private static function readTable($table, $offset)
+    static function writeNotifyUserMessageWithException(\Exception $e)
+    {
+        return self::appendExceptions("NUM|E", $e);
+    }
+
+    private static function readTable($table, $offset, $withSelector = true)
     {
         $winIndex = self::read($table, "I", $offset);
         $mode = self::read($table, "M", $offset + 2);
@@ -298,14 +280,19 @@ class MetadataProviderProtocol extends RemoteProtocol
         $firstItemIndex = self::read($table, "I", $offset + 8);
         $lastItemIndex = self::read($table, "I", $offset + 10);
         
-        $tableInfo = new TableInfo($winIndex, $mode, $group, $schema, $firstItemIndex, $lastItemIndex);
+        $selector = NULL;
+        if ($withSelector === TRUE) {
+            $selector = self::decodeString(self::read($table, "S", $offset + 12));
+        }
+        
+        $tableInfo = new TableInfo($winIndex, $mode, $group, $schema, $firstItemIndex, $lastItemIndex, $selector);
         return $tableInfo;
     }
 
     private static function readTables($data, $offset)
     {
         $tablesSegment = array_slice($data, $offset);
-        $tableChunks = array_chunk($tablesSegment, 7);
+        $tableChunks = array_chunk($tablesSegment, 14);
         
         $tableInfos = array();
         foreach ($tableChunks as $table) {
@@ -313,15 +300,14 @@ class MetadataProviderProtocol extends RemoteProtocol
             array_push($tableInfos, $tableInfo);
         }
         
-        $notifyNewTablesData["tableInfos"] = $tableInfos;
-        return $notifyNewTablesData;
+        return $tableInfos;
     }
 
     static function readNotifyNewTables($data)
     {
         $notifyNewTablesData = array(
-            "user" => self::decodeString($data[1]),
-            "session_id" => self::decodeString($data[3]),
+            "user" => self::decodeString(self::read($data, "S", 0)),
+            "session_id" => self::decodeString(self::read($data, "S", 2)),
             "tableInfos" => self::readTables($data, 4)
         );
         
@@ -330,14 +316,18 @@ class MetadataProviderProtocol extends RemoteProtocol
 
     static function writeNotifyNewTablesData()
     {
-        $response = "NNT|V";
-        return $response;
+        return "NNT|V";
+    }
+
+    static function writeNotifyNewTablesDataWithException(\Exception $e)
+    {
+        return self::appendExceptions("NNT|E", $e);
     }
 
     static function readNotifyTablesClose($data)
     {
         $notifyTablesCloseData = array(
-            "user" => self::decodeString($data[1]),
+            "session_id" => self::decodeString(self::read($data, "S", 0)),
             "tableInfos" => self::readTables($data, 2)
         );
         
@@ -346,9 +336,12 @@ class MetadataProviderProtocol extends RemoteProtocol
 
     static function writeNotifyTablesClose()
     {
-        $response = "NTC|V";
-        
-        return $response;
+        return "NTC|V";
+    }
+
+    static function writeNotifyTablesCloseWithException($e)
+    {
+        return self::appendExceptions("NTC|E", $e);
     }
 
     static function decodeMobilePlatformType($string)
@@ -393,7 +386,12 @@ class MetadataProviderProtocol extends RemoteProtocol
         return $response;
     }
 
-    private static function readMobileGcmSubscriptionInfo($data, $offset)
+    static function writeNotifyDeviceAccessWithException(\Exception $e)
+    {
+        return self::appendExceptions("MDA|E", $e);
+    }
+
+    private static function readMobileApnSubscriptionInfo($data, $offset)
     {
         $argLength = $data[$offset];
         $arguments = self::seq($data, $offset + 22, $argLength * 2);
@@ -408,14 +406,14 @@ class MetadataProviderProtocol extends RemoteProtocol
         $localizedActionKey = self::decodeString(self::read($data, "S", $offset + 14));
         $launchImage = self::decodeString(self::read($data, "S", $offset + 16));
         $format = self::decodeString(self::read($data, "S", $offset + 18));
-        $localizedFormatKey = self::read($data, "S", $offset + 20);
+        $localizedFormatKey = self::decodeString(self::read($data, "S", $offset + 20));
         
-        $mpnSubscriptionInfo = new MpnGcmSubscriptionInfo($device, $trigger, $sound, $badge, $localizedActionKey, $launchImage, $format, $localizedFormatKey, $arguments, $customData);
+        $mpnSubscriptionInfo = new MpnApnSubscriptionInfo($device, $trigger, $sound, $badge, $localizedActionKey, $launchImage, $format, $localizedFormatKey, $arguments, $customData);
         
         return $mpnSubscriptionInfo;
     }
 
-    private static function readMobileApnSubscriptionInfo($data, $offset)
+    private static function readMobileGcmSubscriptionInfo($data, $offset)
     {
         $numOfData = $data[$offset];
         
@@ -423,11 +421,11 @@ class MetadataProviderProtocol extends RemoteProtocol
         $trigger = self::decodeString(self::read($data, "S", $offset + 7));
         $collapseKey = self::decodeString(self::read($data, "S", $offset + 9));
         $dataMap = self::map($data, $offset + 11, $numOfData * 4);
-        $next = $offset + 13 + $numOfData * 4;
+        $next = $offset + 11 + $numOfData * 4;
         $delayWhileIdle = self::decodeString(self::read($data, "S", $next));
-        $timeToLive = self::decodeString(self::read($data, "S", $offset + 13 + $numOfData * 4));
+        $timeToLive = self::decodeString(self::read($data, "S", $next + 2));
         
-        $mpnApnSubscriptionInfo = new MpnApnSubscriptionInfo($device, $trigger, $collapseKey, $dataMap, $delayWhileIdle, $timeToLive);
+        $mpnApnSubscriptionInfo = new MpnGcmSubscriptionInfo($device, $trigger, $collapseKey, $dataMap, $delayWhileIdle, $timeToLive);
         
         return $mpnApnSubscriptionInfo;
     }
@@ -438,17 +436,17 @@ class MetadataProviderProtocol extends RemoteProtocol
         
         $values["user"] = self::decodeString(self::read($data, "S", 0));
         $values["session_id"] = self::decodeString(self::read($data, "S", 2));
-        $values["table"] = self::readTable($data, 4);
+        $values["table"] = self::readTable($data, 4, FALSE);
         
         $subscriptionType = $data[16];
         switch ($subscriptionType) {
             case "PA":
-                $mpnSubscriptionInfo = self::readMobileGcmSubscriptionInfo($data, 17);
+                $mpnSubscriptionInfo = self::readMobileApnSubscriptionInfo($data, 17);
                 $values["subscription"] = $mpnSubscriptionInfo;
                 break;
             
             case "PG":
-                $mpnSubscriptionInfo = self::readMobileApnSubscriptionInfo($data, 17);
+                $mpnSubscriptionInfo = self::readMobileGcmSubscriptionInfo($data, 17);
                 $values["subscription"] = $mpnSubscriptionInfo;
                 break;
         }
@@ -461,6 +459,11 @@ class MetadataProviderProtocol extends RemoteProtocol
         $response = "MSA|V";
         
         return $response;
+    }
+
+    static function writeNotifySubscriptionActivationWithException(\Exception $e)
+    {
+        return self::appendExceptions("MSA|E", $e);
     }
 
     static function readNotifyDeviceTokenChange($data)
@@ -479,6 +482,11 @@ class MetadataProviderProtocol extends RemoteProtocol
     {
         $response = "MDC|V";
         return $response;
+    }
+
+    static function writeNotifyDeviceTokenChangeWithException(\Exception $e)
+    {
+        return self::appendExceptions("MDC|E", $e);
     }
 }
 ?>
