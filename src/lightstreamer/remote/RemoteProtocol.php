@@ -43,10 +43,11 @@ class RemoteProtocol
     static function read($token, $type, $index)
     {
         $currentToken = $token[$index + 1];
-        if ($token[$index] == $type) {
+        $currentTokenType = $token[$index];
+        if ($currentTokenType == $type) {
             return $currentToken;
         } else {
-            throw new \RuntimeException("Found invalid token type $currentToken");
+            throw new RemotingException("Unknown type $currentTokenType while parsing request");
         }
     }
 
@@ -70,7 +71,9 @@ class RemoteProtocol
         for ($i = 0; $i < count($data) - 1; $i += 2) {
             $seq[$c ++] = self::decodeString(self::read($data, "S", $i));
         }
-        
+        if ($i != count($data)) {
+            throw new RemotingException("Token not found while parsing request");
+        }
         return $seq;
     }
 
