@@ -21,7 +21,7 @@ class TableInfo
 
     private $data;
 
-    public function __construct($winIndex, $mode, $group, $schema, $min, $max, $selector = null)
+    public function __construct($winIndex, $mode, $group, $schema, $min, $max, $selector)
     
     {
         $this->data = array(
@@ -30,12 +30,9 @@ class TableInfo
             "group" => $group,
             "schema" => $schema,
             "min" => $min,
-            "max" => $max
+            "max" => $max,
+            "selector" => $selector
         );
-        
-        if (isset($selector)) {
-            $this->data["selector"] = $selector;
-        }
     }
 
     public function __get($name)
