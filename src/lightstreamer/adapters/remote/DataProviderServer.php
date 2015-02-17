@@ -126,8 +126,13 @@ class DataProviderServer extends Server implements ItemEventListener
             $this->endOfSnapshot($itemName, $requestId);
         }
         
-        $this->dataAdapter->subscribe($itemName);
-        $response = DataProviderProtocol::writeSub();
+        $response = "";
+        try {
+            $this->dataAdapter->subscribe($itemName);
+            $response = DataProviderProtocol::writeSub();
+        } catch (\Exception $e) {
+            $response = DataProviderProtocol::writeSubWithException($e);
+        }
         
         return $response;
     }
@@ -135,9 +140,15 @@ class DataProviderServer extends Server implements ItemEventListener
     public function onUSB($requestId, $data)
     {
         $itemName = DataProviderProtocol::readUnsub($data);
-        $this->dataAdapter->unsubscribe($itemName);
-        $this->removeActiveItem($itemName);
-        $response = DataProviderProtocol::writeUnsub();
+        $response = "";
+        try {
+            
+            $this->dataAdapter->unsubscribe($itemName);
+            $this->removeActiveItem($itemName);
+            $response = DataProviderProtocol::writeUnsub();
+        } catch (\Exception $e) {
+            $response = DataProviderProtocol::writeUnsubWithException($e);
+        }
         
         return $response;
     }
