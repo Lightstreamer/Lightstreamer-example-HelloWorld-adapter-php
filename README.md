@@ -284,6 +284,10 @@ with:<BR/>
 `var client = new LightstreamerClient(null, "PHP_HELLOWORLD");`<BR/>
     * Open a browser window and go to: [http://localhost:8080/HelloWorld/]()
 
+## See Also
+
+* [Writing Remote PHP Adapters for Lightstreamer](http://blog.lightstreamer.com/2015/02/writing-remote-php-adapters-for.html)
+
 ### Clients Using This Adapter
 <!-- START RELATED_ENTRIES -->
 
