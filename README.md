@@ -298,7 +298,6 @@ with:<BR/>
 ### Related Projects
 
 * [Complete list of "Hello World" Adapter implementations with other technologies](https://github.com/Weswit?query=Lightstreamer-example-HelloWorld-adapter)
-* [Lightstreamer - Basic Chat Demo - PHP Adapter](https://github.com/Weswit/Lightstreamer-example-Chat-adapter-php)
 * [Lightstreamer - Reusable Metadata Adapters - Java Adapter](https://github.com/Weswit/Lightstreamer-example-ReusableMetadata-adapter-java)
 
 ## Lightstreamer Compatibility Notes
