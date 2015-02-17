@@ -19,6 +19,31 @@ namespace lightstreamer\adapters\remote;
 class DataProviderProtocol extends RemoteProtocol
 {
 
+    private static function appendExceptions($response, \Exception $e, $subtype = true)
+    {
+        if ($subtype === true) {
+            if ($e instanceof DataProviderException) {
+                $response .= "D";
+            } elseif ($e instanceof SubscriptionException) {
+                $response .= "U";
+            } elseif ($e instanceof FailureException) {
+                $response .= "F";
+            }
+        }
+        $response .= "|" . self::encodeString($e->getMessage());
+        
+        if ($subtype === true) {
+            if ($e instanceof CreditsException) {
+                $response .= "|" . $e->getCode() . "|" . self::encodeString($e->getClientUserMsg());
+                if ($e instanceof ConflictingSessionException) {
+                    $response .= "|" . self::encodeString($e->getConflictingSessionID());
+                }
+            }
+        }
+        
+        return $response;
+    }
+
     static function writeInit()
     {
         return "DPI|V";
@@ -34,6 +59,11 @@ class DataProviderProtocol extends RemoteProtocol
         return "SUB|V";
     }
 
+    static function writeSubWithException(\Exception $e)
+    {
+        return self::appendExceptions("SUB|E", $e);
+    }
+
     static function readUnsub($data)
     {
         return self::decodeString(self::read($data, "S", 0));
@@ -42,6 +72,11 @@ class DataProviderProtocol extends RemoteProtocol
     static function writeUnsub()
     {
         return "USB|V";
+    }
+    
+    static function writeUnsubWithException(\Exception $e)
+    {
+        return self::appendExceptions("USB|E", $e);
     }
 
     static function writeEOS($item, $requestId)
