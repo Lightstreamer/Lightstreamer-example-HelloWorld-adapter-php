@@ -77,11 +77,11 @@ abstract class MetadataProviderAdapter extends \Stackable implements IMetaDataPr
         return FALSE;
     }
     
-    public function notifyMpnDeviceAccess($user, MpnDeviceInfo $device) {
+    public function notifyMpnDeviceAccess($user, $sessionID, MpnDeviceInfo $device) {
         
     }
     
-    public function notifyMpnDeviceTokenChange($user, MpnDeviceInfo $device, $newDeviceToken) {
+    public function notifyMpnDeviceTokenChange($user, $sessionID, MpnDeviceInfo $device, $newDeviceToken) {
         
     }
     

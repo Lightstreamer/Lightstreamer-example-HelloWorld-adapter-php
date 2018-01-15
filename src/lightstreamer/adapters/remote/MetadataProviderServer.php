@@ -251,7 +251,7 @@ class MetaDataProviderServer extends Server
         $values = MetadataProviderProtocol::readNotifyDeviceAccess($data);
         $response = "";
         try {
-            $this->metadataAdapter->notifyMpnDeviceAccess($values["user"], $values["mpnDeviceInfo"]);
+            $this->metadataAdapter->notifyMpnDeviceAccess($values["user"], $values["session_id"], $values["mpnDeviceInfo"]);
             $response = MetadataProviderProtocol::writeNotifyDeviceAccess();
         } catch (\Exception $e) {
             $response = MetadataProviderProtocol::writeNotifyDeviceAccessWithException($e);
@@ -277,7 +277,7 @@ class MetaDataProviderServer extends Server
         $values = MetadataProviderProtocol::readNotifyDeviceTokenChange($data);
         $response = "";
         try {
-            $this->metadataAdapter->notifyMpnDeviceTokenChange($values["user"], $values["mpnDeviceInfo"], $values["newDeviceToken"]);
+            $this->metadataAdapter->notifyMpnDeviceTokenChange($values["user"], $values["session_id"], $values["mpnDeviceInfo"], $values["newDeviceToken"]);
             $response = MetadataProviderProtocol::writeNotifyDeviceTokenChange();
         } catch (\Exception $e) {
             $response = MetadataProviderProtocol::writeNotifyDeviceTokenChangeWithException($e);

@@ -371,9 +371,10 @@ class MetadataProviderProtocol extends RemoteProtocol
 
     static function readNotifyDeviceAccess($data)
     {
-        $mpnDeviceInfo = self::readMpnDeviceInfo($data, 2);
+        $mpnDeviceInfo = self::readMpnDeviceInfo($data, 4);
         $values = array(
             "user" => self::decodeString(self::read($data, "S", 0)),
+            "session_id" => self::decodeString(self::read($data, "S", 2)),
             "mpnDeviceInfo" => $mpnDeviceInfo
         );
         
@@ -390,43 +391,15 @@ class MetadataProviderProtocol extends RemoteProtocol
         return self::appendExceptions("MDA|E", $e);
     }
 
-    private static function readMobileApnSubscriptionInfo($data, $offset)
+    private static function readMobileSubscriptionInfo($data, $offset)
     {
-        $argLength = $data[$offset];
-        $arguments = self::seq($data, $offset + 22, $argLength * 2);
+        $device = self::readMpnDeviceInfo($data, $offset);
+        $trigger = self::decodeString(self::read($data, "S", $offset + 6));
+        $notificationFormat = self::decodeString(self::read($data, "S", $offset + 8));
         
-        $custDataSize = $data[$offset + 1];
-        $customData = self::map($data, $offset + 22 + $argLength * 2, $custDataSize * 4);
-        
-        $device = self::readMpnDeviceInfo($data, $offset + 2);
-        $trigger = self::decodeString(self::read($data, "S", $offset + 8));
-        $sound = self::decodeString(self::read($data, "S", $offset + 10));
-        $badge = self::decodeString(self::read($data, "S", $offset + 12));
-        $localizedActionKey = self::decodeString(self::read($data, "S", $offset + 14));
-        $launchImage = self::decodeString(self::read($data, "S", $offset + 16));
-        $format = self::decodeString(self::read($data, "S", $offset + 18));
-        $localizedFormatKey = self::decodeString(self::read($data, "S", $offset + 20));
-        
-        $mpnSubscriptionInfo = new MpnApnSubscriptionInfo($device, $trigger, $sound, $badge, $localizedActionKey, $launchImage, $format, $localizedFormatKey, $arguments, $customData);
+        $mpnSubscriptionInfo = new MpnSubscriptionInfo($device, $trigger, $notificationFormat);
         
         return $mpnSubscriptionInfo;
-    }
-
-    private static function readMobileGcmSubscriptionInfo($data, $offset)
-    {
-        $numOfData = $data[$offset];
-        
-        $device = self::readMpnDeviceInfo($data, $offset + 1);
-        $trigger = self::decodeString(self::read($data, "S", $offset + 7));
-        $collapseKey = self::decodeString(self::read($data, "S", $offset + 9));
-        $dataMap = self::map($data, $offset + 11, $numOfData * 4);
-        $next = $offset + 11 + $numOfData * 4;
-        $delayWhileIdle = self::decodeString(self::read($data, "S", $next));
-        $timeToLive = self::decodeString(self::read($data, "S", $next + 2));
-        
-        $mpnApnSubscriptionInfo = new MpnGcmSubscriptionInfo($device, $trigger, $collapseKey, $dataMap, $delayWhileIdle, $timeToLive);
-        
-        return $mpnApnSubscriptionInfo;
     }
 
     static function readNotifySubscriptionActivation($data)
@@ -437,18 +410,8 @@ class MetadataProviderProtocol extends RemoteProtocol
         $values["session_id"] = self::decodeString(self::read($data, "S", 2));
         $values["table"] = self::readTable($data, 4, FALSE);
         
-        $subscriptionType = $data[16];
-        switch ($subscriptionType) {
-            case "PA":
-                $mpnSubscriptionInfo = self::readMobileApnSubscriptionInfo($data, 17);
-                $values["subscription"] = $mpnSubscriptionInfo;
-                break;
-            
-            case "PG":
-                $mpnSubscriptionInfo = self::readMobileGcmSubscriptionInfo($data, 17);
-                $values["subscription"] = $mpnSubscriptionInfo;
-                break;
-        }
+        $mpnSubscriptionInfo = self::readMobileSubscriptionInfo($data, 16);
+        $values["subscription"] = $mpnSubscriptionInfo;
         
         return $values;
     }
@@ -465,11 +428,12 @@ class MetadataProviderProtocol extends RemoteProtocol
 
     static function readNotifyDeviceTokenChange($data)
     {
-        $mpnDeviceInfo = self::readMpnDeviceInfo($data, 2);
+        $mpnDeviceInfo = self::readMpnDeviceInfo($data, 4);
         $values = array(
             "user" => self::decodeString(self::read($data, "S", 0)),
+            "session_id" => self::decodeString(self::read($data, "S", 2)),
             "mpnDeviceInfo" => $mpnDeviceInfo,
-            "newDeviceToken" => self::decodeString(self::read($data, "S", 8))
+            "newDeviceToken" => self::decodeString(self::read($data, "S", 10))
         );
         
         return $values;

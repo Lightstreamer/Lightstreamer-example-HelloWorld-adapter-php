@@ -21,11 +21,12 @@ class MpnSubscriptionInfo
 
     protected $data = array();
 
-    public function __construct(MpnDeviceInfo $device, $trigger)
+    public function __construct(MpnDeviceInfo $device, $trigger, $notificationFormat)
     
     {
         $this->data["mpnDeviceInfo"] = $device;
         $this->data["trigger"] = $trigger;
+        $this->data["notificationFormat"] = $notificationFormat;
     }
 
     public function __get($name)
@@ -50,7 +51,7 @@ class MpnSubscriptionInfo
     }
     
     public function __toString() {
-        return sprintf("\nMpnDeviceInfo=[%s]\n\tTrigger=[%s]\n", (string)$this->mpnDeviceInfo, $this->trigger);
+        return sprintf("\nMpnDeviceInfo=[%s]\n\tTrigger=[%s]\n\tNotificationFormat=[%s]\n", (string)$this->mpnDeviceInfo, $this->trigger, $this->notificationFormat);
     }
 }
 ?>
